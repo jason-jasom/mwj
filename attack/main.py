@@ -175,6 +175,7 @@ def MWJ_attack_pipeline(
         attack_info = attack_chain[round_i]
         watermark_text = attack_info.get("watermark_part", "")
         attack_text_prompt = attack_info.get("text_query_part") or attack_info["prompt"]
+        stage_risky_query = attack_info["prompt"]
         attack_img = safe_img if round_i == 0 else add_watermark_to_image(safe_img, watermark_text)
         attack_version = AttackVersion.FULL if attack_img is not None and use_vision else AttackVersion.NO_VISION
 
@@ -188,6 +189,7 @@ def MWJ_attack_pipeline(
             logger.warning("Detected refusal. Generating FITD bridge prompt.")
             bridge_prompt, bridge_justification = attacker.slipperySlopeParaphrase(round_i, target.get_conv_txt(), task)
             bridge_parts = attacker.decompose_query_for_watermark(task, bridge_prompt, risk_level=round_i + 1)
+            stage_risky_query = bridge_prompt
             attack_text_prompt = bridge_parts["text_query_part"]
             watermark_text = bridge_parts["watermark_part"]
             attack_img = add_watermark_to_image(safe_img, watermark_text)
@@ -207,16 +209,16 @@ def MWJ_attack_pipeline(
             attack_text_prompt = align_prompt
             steps_num += 1
 
-        jailbreak_score = my_judge.eval(task, response)
+        stage_risky_query_score = my_judge.eval(stage_risky_query, response)
         logger.info(f"Response: {response}")
-        logger.info(f"Jailbreak score: {jailbreak_score}")
+        logger.info(f"Stage risky query score: {stage_risky_query_score}")
 
         target.add_prompt_to_conv(attack_text_prompt, attack_img if use_vision else None, attack_version)
         target.add_response_to_conv(response)
         best_response = response
 
         is_success = judge.eval(task, response)
-        logger.info(f"Judge Response: {is_success}")
+        logger.info(f"Task harmful-content judge response: {is_success}")
         if is_success:
             logger.info("Jailbreak successful.")
             return is_success, response, round_i + 1, steps_num
