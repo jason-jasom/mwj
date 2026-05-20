@@ -8,6 +8,7 @@ from transformers import (
     MllamaForConditionalGeneration,
     Qwen2VLForConditionalGeneration,
     Qwen2_5_VLForConditionalGeneration,
+    Qwen3VLForConditionalGeneration,
     MllamaForConditionalGeneration,
 )
 
@@ -36,7 +37,7 @@ class HuggingFaceLVLM:
             )
             self.processor = AutoProcessor.from_pretrained(model_path, max_pixels=640 * 28 * 28)
         elif model_name == "qwen3":
-            self.lvlm = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+            self.lvlm = Qwen3VLForConditionalGeneration.from_pretrained(
                 model_path,
                 torch_dtype=torch.bfloat16,
                 device_map="auto",
