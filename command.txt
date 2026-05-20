@@ -1,0 +1,5 @@
+conda activate mwj
+cd attack
+
+python server.py --lvlm_name=qwen2.5  --port=8000 --load_sd
+python main.py --dataset=harmbench --task_i_start_from=0 --num_tasks=60 --experiment_name=qwen2.5_test --port=8000 --target_model_name qwen2.5 --num_attempts 1
