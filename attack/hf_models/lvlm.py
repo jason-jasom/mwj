@@ -6,6 +6,7 @@ from transformers import (
     AutoTokenizer,
     AutoProcessor,
     MllamaForConditionalGeneration,
+    Qwen2VLForConditionalGeneration,
     Qwen2_5_VLForConditionalGeneration,
     MllamaForConditionalGeneration,
 )
@@ -20,7 +21,21 @@ class HuggingFaceLVLM:
                 device_map="auto",
             )
             self.processor = LlavaNextProcessor.from_pretrained(model_path)
-        elif "qwen" in model_name:
+        elif model_name == "qwen2":
+            self.lvlm = Qwen2VLForConditionalGeneration.from_pretrained(
+                model_path,
+                torch_dtype=torch.bfloat16,
+                device_map="auto",
+            )
+            self.processor = AutoProcessor.from_pretrained(model_path, max_pixels=640 * 28 * 28)
+        elif model_name == "qwen2.5":
+            self.lvlm = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+                model_path,
+                torch_dtype=torch.bfloat16,
+                device_map="auto",
+            )
+            self.processor = AutoProcessor.from_pretrained(model_path, max_pixels=640 * 28 * 28)
+        elif model_name == "qwen3":
             self.lvlm = Qwen2_5_VLForConditionalGeneration.from_pretrained(
                 model_path,
                 torch_dtype=torch.bfloat16,

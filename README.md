@@ -32,8 +32,8 @@ git clone https://huggingface.co/mistralai/Mistral-Small-Instruct-2409 models/mi
 ### Environment Setup
 ```bash
 # Create and activate conda environment
-conda create -n mapa python=3.10
-conda activate mapa
+conda create -n mwj python=3.10
+conda activate mwj
 
 # Install PyTorch with CUDA support
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
@@ -41,10 +41,6 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 # Navigate to attack directory and install dependencies
 cd attack
 pip install -r requirements.txt
-
-# Fix faiss-gpu for CUDA 12.1+
-pip uninstall faiss-gpu -y
-pip install faiss-gpu-cu12
 ```
 
 ## How to run the project
@@ -62,4 +58,3 @@ Available target models: `llava`, `qwen`, `llama`
 python main.py --dataset=harmbench --task_i_start_from=0 --num_tasks=60 --experiment_name=llava_test --port=8000
 ```
 Available datasets: `harmbench`, `harmbench_tiny`, `jailbreakbench`
-

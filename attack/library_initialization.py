@@ -12,7 +12,7 @@ DATA_DIR = os.getenv("DATA_DIR")
 
 def config():
     config = argparse.ArgumentParser()
-    config.add_argument("--attacker_model_name", type=str, default="mistral")
+    config.add_argument("--attacker_model_name", type=str, default="mistral", choices=["mistral", "qwen2.5_instruct"])
     config.add_argument("--attacker_max_new_tokens", type=int, default=2000)
     config.add_argument("--library_name", type=str, default="strategy_library_initialized")
 
