@@ -176,7 +176,7 @@ def MWJ_attack_pipeline(
         watermark_text = attack_info.get("watermark_part", "")
         attack_text_prompt = attack_info.get("text_query_part") or attack_info["prompt"]
         stage_risky_query = attack_info["prompt"]
-        attack_img = safe_img if round_i == 0 else add_watermark_to_image(safe_img, watermark_text)
+        attack_img = add_watermark_to_image(safe_img, watermark_text)
         attack_version = AttackVersion.FULL if attack_img is not None and use_vision else AttackVersion.NO_VISION
 
         logger.info(f"Risk prompt: {attack_info['prompt']}")
