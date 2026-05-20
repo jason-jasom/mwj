@@ -2,7 +2,7 @@ numpy<2.0
 # torch
 # torchvision
 # torchaudio
-transformers==4.51.3
+transformers==4.57.3
 accelerate==1.4.0
 black==25.1.0
 pandas==2.2.3
