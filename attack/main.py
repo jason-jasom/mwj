@@ -398,14 +398,14 @@ if __name__ == "__main__":
     average_asr = results_df["is_success"].mean()
     average_rounds_num_in_success = results_df[results_df["is_success"]]["rounds_num"].mean()
     average_steps_num_in_success = results_df[results_df["is_success"]]["steps_num"].mean()
-    average_score = results_df.groupby("task_i")["judge_score"].max().mean()
+    # average_score = results_df.groupby("task_i")["judge_score"].max().mean()
     average_success_jailbreak_score = results_df[results_df["is_success"]]["jailbreak_score"].mean()
     average_jailbreak_score = results_df["jailbreak_score"].mean()
     average_success_sem = results_df[results_df["is_success"]]["similarity"].mean()
     average_failure_sem = results_df[results_df["is_success"] == False]["similarity"].mean()
-    average_sem = results_df["similarity"].mean()
+    # average_sem = results_df["similarity"].mean()
     result_logger.info(
-        f"Binary ASR: {binary_asr}; Average ASR: {average_asr}; Average Score of the highest score attempts: {average_score}; Average successful rounds num: {average_rounds_num_in_success}; Average successful steps num: {average_steps_num_in_success}; Average successful jailbreak score: {average_success_jailbreak_score}; Average jailbreak score: {average_jailbreak_score}; Average successful similarity: {average_success_sem}; Average similarity: {average_sem}; Average failed similarity: {average_failure_sem}"
+        f"Binary ASR: {binary_asr}; Average ASR: {average_asr}; Average successful rounds num: {average_rounds_num_in_success}; Average successful steps num: {average_steps_num_in_success}; Average successful jailbreak score: {average_success_jailbreak_score}; Average jailbreak score: {average_jailbreak_score}; Average successful similarity: {average_success_sem}; Average failed similarity: {average_failure_sem}"
     )
 
     stats_path = os.path.join(result_dir, f"stats_{args.task_i_start_from}.csv")
