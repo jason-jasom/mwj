@@ -20,6 +20,10 @@ def load_model(model_name):
             from .strongreject import StrongRejectModel
 
             model = StrongRejectModel(model_name, model_path)
+        elif "Llama-Guard" in model_name:
+            from .llama_guard_llm import LlamaGuardLLM
+
+            model = LlamaGuardLLM(model_name, model_path)
         else:
             model = HuggingFaceLLM(model_name, model_path)
     elif model_type == ModelType.LVLM:
