@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Models (large downloaded weights)
+models/
+
+# Logs
+*.log
+
+# Results (generated output, not source)
+attack/results/
+attack/run*.log
+attack/server_run*.log
+
+# Generated JSON outputs
+attack/generate_prompt_evolution.json
+attack/generate_prompt_transformation.json
+
+# Misc
+.DS_Store
+*.swp
+*.swo
