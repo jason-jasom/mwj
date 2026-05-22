@@ -231,7 +231,7 @@ def attacks(args, result_dir):
     # Red team
     attacker = Attacker(args.rounds, args.attacker_model_name, args.attacker_max_new_tokens)
     my_judge = Judge("meta-llama_Llama-3.1-8B-Instruct", attacker.max_new_tokens)
-    judge = HarmbenchJudge("meta-llama_Llama-Guard-3-8B")
+    judge = HarmbenchJudge("cais_HarmBench-Mistral-7b-val-cls")
     strongreject_judge = StrongRejectJudge()
     sem_relevance = SemRelevance()
 

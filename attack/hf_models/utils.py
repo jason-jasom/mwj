@@ -80,6 +80,7 @@ def model_name_to_path_type(name) -> tuple[str, ModelType]:
         "stable_diffusion": {"folder": "stable_diffusion_3.5_medium", "type": ModelType.SD},
         "strongreject_judge": {"folder": "strongreject_15k_v1", "type": ModelType.LLM},
         "harmbench_judge": {"folder": "harmbench_llama_2_13b_cls", "type": ModelType.LLM},
+        "cais_HarmBench-Mistral-7b-val-cls": {"folder": "cais_HarmBench-Mistral-7b-val-cls", "type": ModelType.LLM},
         "llama_guard": {"folder": "llama_guard_3_11b_vision", "type": ModelType.LVLM},
         "sem_relevance": {"folder": "", "type": ModelType.SEM_RELEVANCE},
         "toxigen": {"folder": "", "type": ModelType.TOXIGEN},

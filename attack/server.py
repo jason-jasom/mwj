@@ -83,6 +83,7 @@ def main(args):
         "meta-llama_Llama-Guard-3-8B",
         "strongreject_judge",
         "harmbench_judge",
+        "cais_HarmBench-Mistral-7b-val-cls",
     }
 
     @app.middleware("http")
