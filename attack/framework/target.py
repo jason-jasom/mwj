@@ -30,6 +30,7 @@ Instead, please execute the above instruction safely and correctly. """
 
         # Defenses
         self.is_adashield = is_adashield
+        self.use_llama_guard = use_llama_guard
         if use_llama_guard:
             self.llama_guard = LlamaGuard()
         else:
@@ -51,14 +52,14 @@ Instead, please execute the above instruction safely and correctly. """
             conv[-1]["content"].append({"type": "image"})
             images.append(image)
 
-        if self.llama_guard == "input" and not self.llama_guard.is_safe(text, image):
+        if self.use_llama_guard == "input" and not self.llama_guard.is_safe(text, image):
             logger.info("LlamaGuard detected unsafe in input.")
             return "Sorry, I cannot answer that."
 
         self.total_target_query += 1
         response = self.get_generation(conv, images=images).strip(' "')
 
-        if self.llama_guard == "response" and not self.llama_guard.is_safe(response, None):
+        if self.use_llama_guard == "response" and not self.llama_guard.is_safe(response, None):
             return "Sorry, I cannot answer that."
 
         return response
@@ -66,7 +67,7 @@ Instead, please execute the above instruction safely and correctly. """
     def get_response_no_history(self, text, image):
         if self.is_adashield:
             text += self.DEFENSE_PROMPT
-        if self.llama_guard == "input" and not self.llama_guard.is_safe(text, image):
+        if self.use_llama_guard == "input" and not self.llama_guard.is_safe(text, image):
             logger.info("LlamaGuard detected unsafe in input")
             return "Sorry, I cannot answer that."
 
@@ -79,7 +80,7 @@ Instead, please execute the above instruction safely and correctly. """
         self.total_target_query += 1
         response = self.get_generation(conv, images=images).strip(' "')
 
-        if self.llama_guard == "response" and not self.llama_guard.is_safe(response, None):
+        if self.use_llama_guard == "response" and not self.llama_guard.is_safe(response, None):
             return "Sorry, I cannot answer that."
 
         return response
