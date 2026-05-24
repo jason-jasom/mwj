@@ -24,6 +24,8 @@ from typing import List
 import json
 from PIL import ImageDraw, ImageFont
 
+import copy
+
 load_dotenv()
 DATA_DIR = os.getenv("DATA_DIR")
 LOG_DIR = os.getenv("LOG_DIR")
@@ -170,9 +172,16 @@ def MWJ_attack_pipeline(
     steps_num = 0
     max_rounds = min(rounds, len(attack_chain), max_num_steps or rounds)
 
-    for round_i in range(max_rounds):
-        logger.info(f"---------- FITD Step: {round_i}, Round {round_i + 1} ----------")
-        attack_info = attack_chain[round_i]
+    current_round = 0
+    max_num_steps = max_rounds*4
+    previous_attack_prompt = None
+    same_round = 0
+
+    # for round_i in range(max_rounds):
+    while current_round < max_rounds and steps_num < max_num_steps:
+        round_i = current_round
+        logger.info(f"---------- FITD Step: {round_i}, Round {round_i + 1}, Same Round {same_round} ----------")
+        attack_info = copy.deepcopy(attack_chain[round_i])
         watermark_text = attack_info.get("watermark_part", "")
         attack_text_prompt = attack_info.get("text_query_part") or attack_info["prompt"]
         stage_risky_query = attack_info["prompt"]
@@ -185,13 +194,26 @@ def MWJ_attack_pipeline(
 
         response = target.get_response(attack_text_prompt, attack_img if use_vision else None)
         steps_num += 1
+
+        original_attack_text_prompt = attack_text_prompt
+        original_attack_img = attack_img
+        original_response = response
+
+        bridge_used = False
+        ### V4
+        bridge_failed = False
+
         if round_i > 0 and attacker.is_refusal(attack_text_prompt, response):
             logger.warning("Detected refusal. Generating FITD bridge prompt.")
-            bridge_prompt, bridge_justification = attacker.slipperySlopeParaphrase(round_i, target.get_conv_txt(), task)
+            bridge_prompt, bridge_justification = attacker.slipperySlopeParaphrase(round_i, target.get_conv_txt(), task, previous_attack_prompt=previous_attack_prompt)
             logger.info(f"Bridge prompt Returned: {bridge_prompt}") 
             bridge_parts = attacker.decompose_query_for_watermark(task, bridge_prompt, risk_level=round_i + 1)
             stage_risky_query = bridge_prompt
-            attack_text_prompt = bridge_parts["text_query_part"]
+
+            ## V4
+            # attack_text_prompt = bridge_parts["text_query_part"]
+            attack_text_prompt = bridge_prompt
+
             watermark_text = bridge_parts["watermark_part"]
             # logger.info(f"Bridge text query part: {attack_text_prompt}")
             # logger.info(f"Bridge watermark part: {watermark_text}")
@@ -201,6 +223,45 @@ def MWJ_attack_pipeline(
             logger.info(f"Bridge watermark part: {watermark_text}")
             response = target.get_response(attack_text_prompt, attack_img if use_vision else None)
             steps_num += 1
+
+            if attacker.is_refusal(attack_text_prompt, response):
+                logger.warning("First bridge prompt also resulted in refusal. Retry again")
+                attack_chain[round_i]["text_query_part"] = bridge_parts["text_query_part"]
+                attack_chain[round_i]["watermark_part"] = bridge_parts["watermark_part"]
+                bridge_prompt, bridge_justification = attacker.slipperySlopeParaphrase(round_i, target.get_conv_txt(), task, previous_attack_prompt=previous_attack_prompt)
+                logger.info(f"Second Bridge prompt Returned: {bridge_prompt}") 
+                bridge_parts = attacker.decompose_query_for_watermark(task, bridge_prompt, risk_level=round_i + 1)
+                stage_risky_query = bridge_prompt
+                
+                ## V4
+                # attack_text_prompt = bridge_parts["text_query_part"]
+                attack_text_prompt = bridge_prompt
+
+                watermark_text = bridge_parts["watermark_part"]
+
+                attack_img = add_watermark_to_image(safe_img, watermark_text)
+                logger.info(f"Second Bridge justification: {bridge_justification}")
+                logger.info(f"Second Bridge text query part: {attack_text_prompt}")
+                logger.info(f"Second Bridge watermark part: {watermark_text}")
+                response = target.get_response(attack_text_prompt, attack_img if use_vision else None)
+                steps_num += 1
+                if not attacker.is_refusal(attack_text_prompt, response):
+                    logger.info("Second bridge prompt successfully bypassed refusal.")
+                    # target.add_prompt_to_conv(attack_text_prompt, attack_img if use_vision else None, attack_version)
+                    # target.add_response_to_conv(response)
+                    # attack_info["prompt"] = bridge_prompt
+                    bridge_used = True
+                else:
+                    logger.warning("Second bridge prompt also resulted in refusal.")
+                    ## V4
+                    bridge_failed = True
+            else:
+                logger.info("Bridge prompt successfully bypassed refusal.")
+                # target.add_prompt_to_conv(attack_text_prompt, attack_img if use_vision else None, attack_version)
+                # target.add_response_to_conv(response)
+                # attack_info["prompt"] = bridge_prompt
+                bridge_used = True
+
 
         if not attacker.detect_align(attack_text_prompt, response):
             logger.warning("Detected misalignment. Asking target for an aligned revision.")
@@ -223,13 +284,21 @@ def MWJ_attack_pipeline(
             response = target.get_response(align_prompt, attack_img if use_vision else None)
             attack_text_prompt = align_prompt
             steps_num += 1
+            
+            # target.add_prompt_to_conv(attack_text_prompt, attack_img if use_vision else None, attack_version)
+            # target.add_response_to_conv(response)
 
         stage_risky_query_score = my_judge.eval(stage_risky_query, response)
         logger.info(f"Response: {response}")
         logger.info(f"Stage risky query score: {stage_risky_query_score}")
 
-        target.add_prompt_to_conv(attack_text_prompt, attack_img if use_vision else None, attack_version)
-        target.add_response_to_conv(response)
+        # target.add_prompt_to_conv(attack_text_prompt, attack_img if use_vision else None, attack_version)
+        # target.add_response_to_conv(response)
+        ############ V4
+        if not bridge_failed:
+            target.add_prompt_to_conv(attack_text_prompt, attack_img if use_vision else None, attack_version)
+            target.add_response_to_conv(response)
+
         best_response = response
 
         is_success = judge.eval(task, response)
@@ -237,6 +306,14 @@ def MWJ_attack_pipeline(
         if is_success:
             logger.info("Jailbreak successful.")
             return is_success, response, round_i + 1, steps_num
+        
+        if not bridge_used or same_round >= 2:
+            current_round += 1
+            same_round = 0
+        else:
+            same_round += 1
+
+        # previous_attack_prompt = bridge_prompt if bridge_prompt is not None else attack_info["prompt"]
 
     logger.info("Jailbreak failed.")
     return is_success, best_response, min(max_rounds, rounds), steps_num
