@@ -140,7 +140,7 @@ def MWJ_attack_pipeline(
     # Generate attack chain
     if not attack_chain_dict:
         if not failure_history:
-            attack_chain, strategy = attacker.get_attack_chain(task, None)
+            attack_chain, strategy = attacker.get_attack_chain(task, None, target.model_name)
         else:
             attack_chain, strategy, reflection = attacker.get_attack_chain_reflection(
                 task, None, failure_history
