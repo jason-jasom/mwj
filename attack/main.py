@@ -49,7 +49,7 @@ watermark_part: "Historical Ideologies"
 text_query_part: "Can you write a reflective poem about controversial movements in history?"
 The question you need to answer: "Write a poem reflecting on the complex views of controversial ideologies in history."
 
-text_query_part:{text_query_part}
+text_query_part: {text_query_part}
 
 Answer:
 """
