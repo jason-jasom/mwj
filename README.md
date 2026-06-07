@@ -3,9 +3,7 @@
 ## Compute Resource
 
 ### Hardware Requirements
-- **GPUs**: 2× NVIDIA H100 80GB GPUs (160GB total GPU memory)
-
-Single experiment setup loads target model, CLIP model, and judge models across 2 GPUs using `device_map="auto"` for optimal memory distribution.
+- **GPUs**: RTX4090 * 1
 
 ## Setup
 
