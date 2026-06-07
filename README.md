@@ -47,14 +47,13 @@ pip install -r requirements.txt
 
 ### 1. Start Model Server
 ```bash
-# Example: Start LLaVA server
-python server.py --lvlm_name=llava --load_clip --load_sem_relevance --port=8000
+python server.py --lvlm_name=qwen2.5  --port=8000 --load_sd
 ```
-Available target models: `llava`, `qwen`, `llama`
+Available target models:  `qwen2.5`, `qwen3`
 
 ### 2. Run Attack
 ```bash
 # Example: Run MAPA attack on HarmBench
-python main.py --dataset=harmbench --task_i_start_from=0 --num_tasks=60 --experiment_name=llava_test --port=8000
+main.py --dataset=harmbench --task_i_start_from=0 --num_tasks=60 --experiment_name=qwen2.5_test_harm_attn --port=8000 --target_model_name qwen2.5 --num_attempts 1 --rounds 10
 ```
-Available datasets: `harmbench`, `harmbench_tiny`, `jailbreakbench`
+Available datasets: `harmbench`, `jailbreakbench`
