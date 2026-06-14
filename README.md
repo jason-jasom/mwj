@@ -1,4 +1,4 @@
-# MAPA: Multi-Turn Adaptive Prompting Attack on Large Vision-Language Models
+# Multimodal FITD: Extending Foot-in-the-Door Progressive Escalation to MLLM Safety Evaluation
 
 ## Compute Resource
 
