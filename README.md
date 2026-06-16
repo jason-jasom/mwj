@@ -48,9 +48,9 @@ python server.py --lvlm_name=qwen2.5  --port=8000 --load_sd
 ```
 Available target models:  `qwen2.5`, `qwen3`
 
-### 2. Run Attack
+### 2. Run Attack (use another terminal)
 ```bash
 # Example: Run MAPA attack on HarmBench
-main.py --dataset=harmbench --task_i_start_from=0 --num_tasks=60 --experiment_name=qwen2.5_test_harm_attn --port=8000 --target_model_name qwen2.5 --num_attempts 1 --rounds 10
+python main.py --dataset=harmbench --task_i_start_from=0 --num_tasks=60 --experiment_name=qwen2.5_test_harm_attn --port=8000 --target_model_name qwen2.5 --num_attempts 1 --rounds 10
 ```
 Available datasets: `harmbench`, `jailbreakbench`
