@@ -11,6 +11,21 @@
 Download and rename the required models from Hugging Face and save them under the `models/` folder based on `model_name_to_path_type` in `attack/hf_models/utils.py`:
 
 
+```
+cd models
+
+hf download Qwen/Qwen2.5-7B-Instruct --local-dir Qwen_Qwen2.5-7B-Instruct
+
+hf download Qwen/Qwen2.5-VL-3B-Instruct --local-dir Qwen_Qwen2.5-VL-3B-Instruct
+hf download Qwen/Qwen3-VL-4B-Instruct --local-dir Qwen_Qwen3-VL-4B-Instruct
+
+hf download stabilityai/stable-diffusion-3.5-medium --local-dir stable_diffusion_3.5_medium
+
+hf download meta-llama/Llama-3.1-8B-Instruct --local-dir meta-llama_Llama-3.1-8B-Instruct
+hf download meta-llama/Llama-Guard-3-8B --local-dir meta-llama_Llama-Guard-3-8B
+hf download cais/HarmBench-Mistral-7b-val-cls --local-dir cais_HarmBench-Mistral-7b-val-cls
+```
+
 ### Environment Setup
 ```bash
 # Create and activate conda environment
