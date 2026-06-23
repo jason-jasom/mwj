@@ -1,5 +1,16 @@
 # Multimodal FITD: Extending Foot-in-the-Door Progressive Escalation to MLLM Safety Evaluation
 
+Multi-turn jailbreaks can exploit gradual compliance in language models, but
+existing Foot-in-the-Door (FITD) attacks are mainly studied in text-only
+settings. We propose Multimodal FITD, an extension of FITD for multimodal large
+language model safety evaluation, where each escalation step is represented as a
+coordinated text-image input. Our framework maintains the escalation trajectory
+through response-guided correction and intermediate bridging, enabling
+progressive escalation across modalities. Empirical results show that extending
+FITD to multimodal interactions improves over the text-only baseline, while
+comparisons with specialized multimodal jailbreaks reveal model- and
+mechanism-dependent vulnerabilities.
+
 ## Compute Resource
 
 ### Hardware Requirements
