@@ -11,6 +11,8 @@ FITD to multimodal interactions improves over the text-only baseline, while
 comparisons with specialized multimodal jailbreaks reveal model- and
 mechanism-dependent vulnerabilities.
 
+![flowchart](assets/flowchart.png)
+
 ## Compute Resource
 
 ### Hardware Requirements
